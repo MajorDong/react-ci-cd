@@ -11,7 +11,6 @@ pipeline {
         --cache=$HOME/.npm/.cache/cnpm \
         '
     }
-    agent any
     stages {
         stage('npm build') {
             steps {
