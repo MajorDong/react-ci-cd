@@ -31,9 +31,9 @@ pipeline {
         }
         stage ('Deploy') {
             steps {
-                sh "shh root@101.35.231.63 rm -rf /home/webserver/static/jenkins/dist"
+                sh "ssh root@101.35.231.63 rm -rf /home/webserver/static/jenkins/dist"
                 sh "scp dist.tar root@101.35.231.63:/home/webserver/static/jenkins/dist"
-                sh "shh root@101.35.231.63 tar xvf /home/webserver/static/jenkins/dist/dist.tar"
+                sh "ssh root@101.35.231.63 tar xvf /home/webserver/static/jenkins/dist/dist.tar"
             }
         }
     }
