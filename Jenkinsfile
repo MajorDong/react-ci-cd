@@ -17,11 +17,11 @@ pipeline {
                 sh "${npm} install"
             }
         }
-        // stage('Unit test') {
-        //     steps {
-        //         sh "${npm} run test"
-        //     }
-        // }
+        stage('Unit test') {
+            steps {
+                sh "${npm} run test"
+            }
+        }
         stage('Npm build') {
             steps {
                 sh "pwd"
@@ -29,11 +29,22 @@ pipeline {
                 sh "tar -zcvf dist.tar ./build"
             }
         }
-        stage ('Deploy') {
-            steps {
-                sh "ssh root@101.35.231.63 rm -rf /home/webserver/static/jenkins/dist"
-                sh "scp dist.tar root@101.35.231.63:/home/webserver/static/jenkins/dist"
-                sh "ssh root@101.35.231.63 tar xvf /home/webserver/static/jenkins/dist/dist.tar"
+        stage('SSH transfer') {
+            steps([$class: 'BapSshPromotionPublisherPlugin']) {
+                sshPublisher(
+                    continueOnError: false, failOnError: true,
+                    publishers: [
+                        sshPublisherDesc(
+                            configName: "admin",
+                            verbose: true,
+                            remoteDirectory: 'jenkins/dist',
+                            transfers: [
+                                sshTransfer(sourceFiles: 'dist.tar'),
+                                sshTransfer(execCommand: "tar xvf jenkins/dist/dist.tar -C /home/webserver/static/jenkins/dist/"),
+                            ]
+                        )
+                    ]
+                )
             }
         }
     }
