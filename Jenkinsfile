@@ -5,7 +5,7 @@ pipeline {
         --cache=$HOME/.npm/.cache/cnpm \
         '
     }
-    agent { docker 'node:14.17.6' }
+    agent any
     stages {
         stage('npm build') {
             steps {
