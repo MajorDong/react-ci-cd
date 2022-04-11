@@ -11,7 +11,7 @@ pipeline {
             steps {
                 // sh "${cnpm} i"
                 // sh "${cnpm} run build"
-                sh "npm --version"
+                sh "${npm} --version"
             }
         }
         // stage ('Starting bff job') {
