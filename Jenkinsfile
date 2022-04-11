@@ -1,4 +1,3 @@
-/* groovylint-disable-next-line NglParseError */
 pipeline {
     agent {
       docker {
@@ -12,17 +11,30 @@ pipeline {
         '
     }
     stages {
-        stage('npm build') {
+        stage('Npm install') {
             steps {
-                // sh "${cnpm} i"
-                // sh "${cnpm} run build"
                 sh "${npm} --version"
+                sh "${npm} install"
             }
         }
-        // stage ('Starting bff job') {
-        //     steps{
-        //     build job: 'bme-portal-bff', wait: false
+        // stage('Unit test') {
+        //     steps {
+        //         sh "${npm} run test"
         //     }
         // }
+        stage('Npm build') {
+            steps {
+                sh "pwd"
+                sh "${npm} run build"
+                sh "tar -zcvf dist.tar ./build"
+            }
+        }
+        stage ('Deploy') {
+            steps {
+                sh "shh root@101.35.231.63 rm -rf /home/webserver/static/jenkins/dist"
+                sh "scp dist.tar root@101.35.231.63:/home/webserver/static/jenkins/dist"
+                sh "shh root@101.35.231.63 tar xvf /home/webserver/static/jenkins/dist/dist.tar"
+            }
+        }
     }
 }
