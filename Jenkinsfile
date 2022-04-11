@@ -6,9 +6,7 @@ pipeline {
         '
     }
     agent {
-        node {
-            label 'master'
-        }
+        docker 'node:14.17.6' 
     }
     stages {
         stage('npm build') {
